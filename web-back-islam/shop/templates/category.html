@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+	<ul class="nav " style="margin-bottom: 20px;">
+		{% for pod_category in category.children.all %}
+			<li class="nav-item" style="margin-right: 5px;">
+				<a class="btn btn-outline-primary" href="{% url 'category' pod_category.id %}">{{ pod_category.title }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+    <div class="card-deck">
+    {% for product in category.products.all %}
+        {% include "card-products.html" %}
+    {% endfor %}
+</div>
+{% endblock content %}

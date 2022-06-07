@@ -1,0 +1,7 @@
+<div class="card border-warning text-center shadow-lg" style="max-width: 20rem; min-width: 18rem; margin-bottom: 15px;">
+    <img src="{{ product.product_items.first.image.url }}" class="card-img-top rounded">
+    <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <a href="{% url 'product-detail' product.id %}" class="btn btn-primary stretched-link" style="margin-top: 10px;">More</a>
+    </div>
+</div>

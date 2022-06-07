@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+	<div class="card-deck">
+		{% for product in products %}
+			{% include "card-products.html" %}
+		{% endfor %}
+	</div>
+{% endblock content %}

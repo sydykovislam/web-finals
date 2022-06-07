@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+	<style type="text/css">
+		.prod-img {
+			width: 60%;
+		}
+		.prod-text {
+			width: 40%;
+		}
+		.cart {
+			max-width: 250px;
+			margin-bottom: 20px;
+			float: right!important;
+		}
+		@media (max-width: 990px){
+			.prod-img {
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.prod-text {
+				width: 100%;
+			}
+		}
+	</style>
+{% endblock style %}
+{% block content %}
+	<div class="card">
+		<div class="card-header text-center">
+			<h1>{{ product.name }}</h1>
+		</div>
+		<div class="card-body" id="myTabContent">
+			<button class="btn btn-primary cart" data-toggle="modal" data-target="#exampleModal">
+				<i class="fas fa-cart-plus"></i> Add to cart</button>
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header text-center">
+							<h5 class="modal-title" id="exampleModalLabel">Add to cart</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form method="POST">
+								{% csrf_token %}
+								<div class="form-group">
+									<label for="product-select">Item:</label>
+									<select class="form-control" name="product-id" id="product-select">
+										{% for pr_item in product.product_items.all %}
+											<option value="{{ pr_item.id }}">{{ pr_item.name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="form-group"> 
+									<label for="quantity">Number:</label>
+									<input class="form-control" type="number" name="quantity" id="quantity" value="1" min="1">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">Ok</button>
+							</div>
+						</form>
+					</div>
+				</div>
+		</div>
+				<ul class="nav nav-tabs mb-3 mr-auto" id="myTab" role="tablist" style="min-width: 250px;">
+					{% for pr_item in product.product_items.all %}
+					{% if pr_item.id == product.product_items.first.id %}
+						<li class="nav-item mb-1 mr-1" role="presentation">
+							<a class="btn btn-outline-primary active" id="p{{ pr_item.id }}-tab" data-toggle="tab" href="#p{{ pr_item.id }}" role="tab" aria-controls="p{{ pr_item.id }}" aria-selected="true">{{ pr_item.name }}</a>
+						</li>
+					{% else %}
+						<li class="nav-item mb-1 mr-1" role="presentation">
+							<a class="btn btn-outline-primary" id="p{{ pr_item.id }}-tab" data-toggle="tab" href="#p{{ pr_item.id }}" role="tab" aria-controls="p{{ pr_item.id }}" aria-selected="false">{{ pr_item.name }}</a>
+						</li>
+					{% endif %}
+					{% endfor %}
+				</ul>
+				<div class="tab-content">
+					{% for pr_item in product.product_items.all %}
+					{% if pr_item.id == product.product_items.first.id %}
+						<div class="tab-pane w-100 fade active show" id="p{{ pr_item.id }}" role="tabpanel" aria-labelledby="p{{ pr_item.id }}-tab">
+							<ul class="nav">
+								<li class="prod-img">
+									<img src="{{ pr_item.image.url }}" class="card-img" style="height: 100%;">
+								</li>
+								<li class="text-center prod-text">
+										<h2>{{ pr_item.name }}</h2>
+										<h3>{{ pr_item.price }} сом</h3>
+										<p class="card-title">{{ pr_item.description }}</p>
+								</li>
+							</ul>
+						</div>
+					{% else %}
+						<div class="tab-pane fade w-100" id="p{{ pr_item.id }}" role="tabpanel" aria-labelledby="p{{ pr_item.id }}-tab">
+							<ul class="nav">
+								<li class="prod-img">
+									<img src="{{ pr_item.image.url }}" class="card-img" style="height: 100%;">
+								</li>
+								<li class="text-center prod-text">
+										<h2>{{ pr_item.name }}</h2>
+										<h3>{{ pr_item.price }} сом</h3>
+										<p class="card-title">{{ pr_item.description }}</p>
+								</li>
+							</ul>
+						</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+		</div>
+	</div>
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+  <style type="text/css">
+    .card {
+      width: 80%;
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  </style>
+{% endblock style %}
+{% block content %}	
+  <div class="card text-center">
+    <div class="card-header">
+      <h1>Login</h1>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">Enter your name:</label>
+          <input type="username" id="username" name="username">         
+        </div>
+        <div class="form-group">
+          <label for="password">Enter your password:</label>
+          <input type="password" id="password" name="password">         
+        </div>
+        <button class="btn btn-success" type="submit">login</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

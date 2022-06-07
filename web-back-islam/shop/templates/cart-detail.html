@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+{% block style %}
+	<style type="text/css">
+		.prod-img {
+			width: 50%;
+			margin-right: 5%;
+		}
+		.prod-body {
+			width: 45%;
+		}
+		hr {
+			margin-top: 15px;
+			margin-bottom: 15px;
+		}
+		.card {
+			min-width: 400px;
+		}
+    .li {
+      width: 50%;
+      margin-bottom: 5px;
+    }
+		@media (max-width: 500px){
+			.li {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      .prod-img {
+				width: 100%;
+			}
+			.prod-body {
+				width: 100%;
+			}
+			.quan {
+				max-width: 50%;
+				margin-left: 25%;
+			}
+			.card {
+				min-width: 100%;
+			}
+		}
+    @media (min-width: 990px) {
+      .li {
+        width: 25%;
+      }
+    }
+	</style>	
+{% endblock style %}
+{% block content %}
+<div class="card text-center mb-3">
+	<div class="card-header">
+		<h1 class="card-title">
+			Cart
+		</h1>
+  </div>
+  <div class="card-body">
+    <ul class="nav text-center">
+      <li class="li">
+        <h5 class="card-title">Number: {{ cart | length }}</h5>
+      </li>
+      <li class="li">
+        <h5 class="card-title">Sum: {{ cart.get_total_price }} soms</h5>
+      </li>
+      <!-- <li class="li">
+        <button class="btn btn-danger">Clear cart</button>
+      </li>
+      <li class="li">
+        <a href="#" class="btn btn-primary">Apply</a>
+      </li> -->
+    </ul>
+  </div>
+</div>
+<div class="card-deck">
+		{% for item in cart %}
+				<div class="card mb-3">
+					<div class="card-header text-center">
+						<a href="{% url 'product-detail' item.url %}" class="text-dark">
+              <h4 class="card-title">{{ item.name }}</h4>
+            </a>
+					</div>
+					<div class="card-body">
+						<ul class="nav">
+							<li class="prod-img">
+								<img src="{{ item.image }}" class="card-img">
+							</li>
+							<li class="prod-body text-center">
+								<form method="POST" class="item-form">
+									{% csrf_token %}
+									<div class="form-group"> 
+										<label for="quantity{{ item.id }}">Number:</label>
+										<input class="form-control quan mb-4" type="number" name="quantity" id="quantity{{ item.id }}" value="{{ item.quantity }}" min="1">
+										<b class="card-text">Price: {{ item.price }} soms</b><br>
+										<hr>
+										<b class="card-text total">Sum: {{ item.total_price }} soms</b><br>
+										<hr>
+										<input type="hidden" value="{{ item.id }}" name="id">
+                  </div>
+							</li>
+						</ul>
+					</div>
+					<div class="card-footer">
+						<button type="submit" class="btn btn-danger">Delete</button>
+					</form>
+					</div>
+				</div>
+		{% endfor %}
+	</div>
+{% endblock content %}
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+		$(".quan").change(function() {
+			var quantity = $(this).val();
+			var id = $(this).attr('id');
+      var total = $(this).nextAll('.total');
+			$.ajax({
+        type: 'GET',
+				url: "{% url 'change-quantity' %}",
+				data: {'quantity': quantity, 'id': id},
+				dataType: 'json',
+				success: function (response){
+          total.text("Sum: " + JSON.parse(response['total_price']) + ' soms')
+				}
+			});												
+		});
+    $('.item-form').submit(function(e) {
+      e.preventDefault();
+      var serializedData = $(this).serialize(); 
+      $.ajax({
+        type: 'POST',
+        url:"{% url 'card-item-ad' %}",
+        data: serializedData
+      });
+    });
+  });
+	</script>
+{% endblock js %}
